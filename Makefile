@@ -1,7 +1,7 @@
 
 STAGE?=dev
 CF_ENV=dev
-REGION=ap-southeast-2
+REGION=eu-central-1
 
 SHELL := /bin/bash
 
