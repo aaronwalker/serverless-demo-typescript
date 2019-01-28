@@ -1,0 +1,75 @@
+
+service: demo-serverless-typescript # NOTE: update this with your service name
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  deploymentBucket:
+    name: 855280047356.eu-central.ciinabox
+  environment:
+    cfenv: ${opt:cfenv}
+    stage: ${opt:stage}
+    region: "#{AWS::Region}"
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:GetQueueUrl"
+      Resource: "arn:aws:sqs:#{AWS::Region}:#{AWS::AccountId}:${opt:stage}-demo"
+    - Effect: "Allow"
+      Action:
+        - "sqs:ListQueues"
+      Resource: "arn:aws:sqs:#{AWS::Region}:#{AWS::AccountId}:*"
+  # vpc:
+  #     securityGroupIds:
+  #       - ${cf:${opt:cfenv}.SecurityGroupBackplane}
+  #     subnetIds:
+  #       - ${cf:${opt:cfenv}.SubnetCompute0}
+  #       - ${cf:${opt:cfenv}.SubnetCompute1}
+  #       - ${cf:${opt:cfenv}.SubnetCompute2}
+
+package:
+  individually: true
+
+functions:
+  hello:
+    handler: src/handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+      queue:
+        Fn::Sub: "#{DemoQueue}"
+  receiver:
+    handler: src/handler.receiver
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - DemoQueue
+              - Arn
+
+custom:
+  config:
+    region: ${opt:region, self:provider.region}
+    stage: ${opt:stage, self:provider.stage}
+    cfenv: ${opt:cfenv, 'dev'}
+
+resources:
+  Resources:
+    DemoQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "${opt:stage}-demo"
+    DemoUrlSSM:
+      Type: "AWS::SSM::Parameter"
+      Properties:
+        Name: /demo/${opt:stage}/demo-queue
+        Type: String
+        Value:
+          Fn::Sub: "#{DemoQueue}"

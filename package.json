@@ -1,0 +1,20 @@
+{
+  "name": "demo-serverless-typescript",
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.18",
+    "aws-sdk": "^2.380.0",
+    "aws-sdk-mock": "^4.3.0",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.18.0",
+    "serverless-plugin-typescript": "^1.1.5",
+    "serverless-pseudo-parameters": "^2.4.0",
+    "ts-node": "^7.0.1"
+  },
+  "scripts": {
+    "test": "MOCHA_FILE=results.xml mocha -r ts-node/register **/*.spec.ts --reporter mocha-junit-reporter"
+  },
+  "dependencies": {}
+}
