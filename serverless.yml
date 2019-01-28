@@ -1,5 +1,5 @@
 
-service: demo-serverless-typescript # NOTE: update this with your service name
+service: serverless-demo-typescript # NOTE: update this with your service name
 
 plugins:
   - serverless-plugin-typescript
