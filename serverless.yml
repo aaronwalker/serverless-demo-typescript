@@ -43,6 +43,7 @@ functions:
       - http:
           path: hello
           method: get
+    environment:
       queue:
         Fn::Sub: "#{DemoQueue}"
   receiver:
