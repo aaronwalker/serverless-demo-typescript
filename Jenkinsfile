@@ -3,8 +3,6 @@ pipeline {
     environment {
       AWS_REGION = "eu-central-1"
       CIINABOX_ROLE = 'ciinabox'
-      DEV_ACCOUNT_ID = "855280047356"
-      PROD_ACCOUNT_ID = "855280047356"
     }
     agent {
       docker {
